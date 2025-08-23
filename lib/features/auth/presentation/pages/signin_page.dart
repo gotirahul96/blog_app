@@ -1,0 +1,87 @@
+import 'package:blog_app/core/theme/app_pallete.dart';
+import 'package:blog_app/features/auth/presentation/widgets/auth_field.dart';
+import 'package:blog_app/features/auth/presentation/widgets/auth_gradiant_button.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+
+class SignInPage extends StatefulWidget {
+  const SignInPage({super.key});
+
+  @override
+  State<SignInPage> createState() => _SigninPageState();
+}
+
+class _SigninPageState extends State<SignInPage> {
+
+
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: Form(
+          key: formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("Sign In.",style: TextStyle(fontSize: 50,fontWeight: FontWeight.bold)),
+              const SizedBox(height: 30),
+              AuthField(
+                hintText: 'Email',
+                controller: emailController,
+                validatorText: "This cannot be empty",
+              ),
+              const SizedBox(height: 15),
+              AuthField(
+                hintText: 'Password',
+                isObscureText: true,
+                controller: passwordController,
+                validatorText: "This cannot be empty",
+              ),
+              const SizedBox(height: 20),
+              AuthGradiantButton(
+                buttonText: "Sign In",
+                onPressed: () {
+                  if (formKey.currentState!.validate()) {
+                    
+                  }
+                },
+              ),
+              const SizedBox(height: 20),
+              RichText(text: TextSpan(
+                text: "Don't have an account? ",
+                style: Theme.of(context).textTheme.titleMedium,
+                children: [
+                  TextSpan(
+                    text: "Sign Up?",
+                    recognizer: TapGestureRecognizer()..onTap = (){
+                      context.push('/sign_up_page');
+                    },
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: AppPallete.gradient2,
+                      fontWeight: FontWeight.bold
+                    )
+                  )
+                ]
+              ))
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
