@@ -45,5 +45,9 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>The app wants to use this so that you can upload images to your blogs.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>The app wants to use this so that you can upload images to your blogs.</string>
 </dict>
 </plist>
