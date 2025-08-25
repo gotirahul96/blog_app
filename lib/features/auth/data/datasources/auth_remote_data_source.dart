@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:blog_app/core/error/exceptions.dart';
 import 'package:blog_app/features/auth/data/models/user_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -38,6 +40,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       }
       return null;
      
+    } on SocketException catch (_){
+      return UserModel(id: currentUserSession!.user.id, email: currentUserSession!.user.email!, name: currentUserSession!.user.userMetadata?['name']);
     } catch (e) {
       throw ServerException(e.toString());
     }

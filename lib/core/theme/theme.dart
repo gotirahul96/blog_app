@@ -12,11 +12,17 @@ static _border ([Color color = AppPallete.borderColor]) => OutlineInputBorder(
   static final darkThemeMode = ThemeData.dark(useMaterial3: true).copyWith(
     scaffoldBackgroundColor: AppPallete.backgroundColor,
     appBarTheme: const AppBarTheme(
-      backgroundColor: AppPallete.backgroundColor
+      backgroundColor: AppPallete.backgroundColor,
+      centerTitle: true
+    ),
+    chipTheme: ChipThemeData(
+      color: WidgetStateProperty.all(AppPallete.backgroundColor),
+      side: BorderSide.none,
     ),
     inputDecorationTheme: InputDecorationTheme(
       contentPadding: const EdgeInsets.all(18),
       enabledBorder: _border(),
+      border: _border(),
       focusedBorder: _border(AppPallete.gradient2),
       errorBorder: _border(AppPallete.errorColor) 
     )
