@@ -1,0 +1,83 @@
+#The data in the metadata file defines the inputs, outputs, and runs configuration for your action
+
+name: "Build & Release"   # You can name it as you want
+on:
+  pull_request:
+    branches:
+      - pbl/dev
+      - pbl/test
+  push:
+    branches:
+      - pbl/dev
+      - pbl/test 
+
+#This means our action will be triggered whenever we push something to branch dev or test or do a PR on branch dev or test.
+
+jobs:  # Telling what jobs we need to happen
+  build:      # Specify the building name and machine
+    name: Build & Release  # you can name the build whatever you want
+    runs-on: macos-latest # here we selected macos-latest to be able to get ios
+
+#If you do not need an IOS build, you could use “ubuntu-latest” to run your code on it and get the APK and AAB without issues.
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+#Here we use a pre-created action called checkout which checks out your repository code so that the workflow has access to it. 
+#You can find this action and many others in the GitHub Actions marketplace. 
+#Giving each action a name is not required but is useful for clarity.
+
+#1 Checkout Repository
+#2 Setup Java
+#3 Setup Flutter
+#4 Install Dependencies
+#5 Build Flutter
+#6 Create Release
+#7 Building App Bundle (aab)
+#8 Build IPA (iOS Build)
+#9 Compress Archives and IPAs
+#10 Upload Artifacts
+#11 Extract Version
+#12 Check if Tag Exists
+#13 Modify Tag if it Exists
+#14 Create Release
+      - name: Set Up Java
+        uses: actions/setup-java@v3.12.0
+        with:
+          distribution: 'oracle'
+          java-version: '17'
+
+#This step sets up the required Java environment using the setup-java action. 
+#We specify the distribution as 'Oracle' and the Java version as '17'. 
+#This is necessary for building Android apps.
+      - name: Set Up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+#This step uses the subosito/flutter-action to set up the Flutter environment with the specified version and channel.
+#This ensures that the correct version of Flutter is used during the build process.
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+#This step runs flutter pub get to install the necessary dependencies for your Flutter project. 
+#This is equivalent to running the command locally and is crucial for resolving 
+#all the dependencies specified in your pubspec.yaml file.
+      - name: build apk and split per abi
+        run: flutter build apk --release --split-per-abi
+      - name: Build IPA
+        run: | 
+          flutter build ios --no-codesign && \
+          cd build/ios/iphoneos && \
+          mkdir -p Payload && \
+          cp -r Runner.app Payload/ && \
+          zip -r app.ipa Payload
+
+
+      - name: Push to release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "build/app/outputs/apk/release/*,build/ios/iphoneos/app.ipa"
+          tag: v1.0.${{ github.run_number }}
+          token: ${{ secrets.Token }}
