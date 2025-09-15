@@ -4,12 +4,11 @@ name: "Build & Release"   # You can name it as you want
 on:
   pull_request:
     branches:
-      - pbl/dev
-      - pbl/test
+      - dev
+      - main
   push:
     branches:
-      - pbl/dev
-      - pbl/test 
+      - dev
 
 #This means our action will be triggered whenever we push something to branch dev or test or do a PR on branch dev or test.
 
